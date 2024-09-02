@@ -2,18 +2,20 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
 import { useSelector } from "react-redux";
-import { getCategory, } from "../../Actions/searchAction";
+import { getCategory, getProductsByCategory, } from "../../Actions/searchAction";
 import "./category.scss";
+import { useNavigate } from "react-router-dom";
 const Category = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { categoryDetails } = useSelector((state: RootState) => state.categoryDetailsList);
-
+    const navigate = useNavigate();
     useEffect(() => {
         dispatch(getCategory())
     }, [])
 
     const onClick = (category: any) => {
-        console.log("category", category);
+        dispatch(getProductsByCategory(category.slug));
+        navigate("/itemList");
     };
 
     return (

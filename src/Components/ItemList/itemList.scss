@@ -1,0 +1,39 @@
+.cart-item-container {
+    // .text{
+    //     padding-left: 1.5rem;
+    // }
+}
+
+.sales-item-img-icon {
+    width: 2.5rem;
+
+    &:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+    }
+}
+
+.cart-pills {
+    padding: 1rem;
+    display: flex;
+    gap: 5px;
+
+    .btn-back-to-cart {
+        float: right;
+    }
+}
+
+.table tbody td,
+.table tbody th {
+    padding-bottom: 1.25rem;
+    padding-top: 1.25rem;
+    vertical-align: middle;
+}
+
+.cart-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}

@@ -1,4 +1,4 @@
-import { GET_CATEGORY, } from "../Actions/type";
+import { GET_CATEGORY, GET_PRODUCT_BY_CATEGORY } from "../Actions/type";
 const initialState = {
     categoryDetails: null,
 };
@@ -13,7 +13,11 @@ export default (state: any, action: any) => {
                 ...state,
                 categoryDetails: action.payload,
             };
-
+        case GET_PRODUCT_BY_CATEGORY:
+            return {
+                ...state,
+                productByCategory: action.payload,
+            };
         default:
             return state;
     }
