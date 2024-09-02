@@ -1,10 +1,12 @@
 import React from "react";
 import "./searchPage.scss";
-
+import ItemTabs from "../Shared/ItemTabs/itemTabs";
 const SearchPage = () => {
     return (
-        <div className="search-page">
-            <h1>Search Page</h1>
+        <div>
+            <div>
+                <ItemTabs />
+            </div>  
         </div>
     );
 }
