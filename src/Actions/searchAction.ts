@@ -2,7 +2,8 @@ import { callApi } from ".";
 import { 
   GET_CATEGORY,
   GET_SEARCH_RESULTS, 
-  GET_SUGGESTION_LIST
+  GET_SUGGESTION_LIST,
+  GET_ALL_PRODUCTS
 } from "./type";
 
 export const getSearchResults = (value: string | null) => async (dispatch: any) => {
@@ -27,6 +28,15 @@ export const getCategory = () => async (dispatch: any) => {
     const data = await callApi(url, 'GET');
     dispatch({
       type: GET_CATEGORY,
+      payload: data
+    });
+  }
+
+  export const getAllProducts = () => async (dispatch: any) => {
+    let url = `https://dummyjson.com/products`;
+    const data = await callApi(url, 'GET');
+    dispatch({
+      type: GET_ALL_PRODUCTS,
       payload: data
     });
   }
