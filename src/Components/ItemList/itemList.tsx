@@ -19,14 +19,11 @@ const ItemList = () => {
     const { searchResult } = useSelector((state: RootState) => state.searchDetailsList);
     const { cartItems } = useSelector((state: RootState) => state.cartItemsList);
     const [itemListData, setItemListData] = useState<any>([]);
-    const [addItem, setAddItem] = useState<any>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>();
     const [cartItemList, setCartItemsList] = useState<any>();
-    const [quantityList, setQuantityList] = useState<(number| string)[]>([]);
+    const [quantityList, setQuantityList] = useState<(number | string)[]>([]);
     const navigate = useNavigate();
     useEffect(() => {
-        console.log(searchResult);
-        console.log(itemListData);
         if (searchResult?.products?.length > 0) {
             setItemListData(searchResult);
             const quantity = new Array(searchResult.products.length).fill(0);
@@ -41,24 +38,24 @@ const ItemList = () => {
             setQuantityList(quantity);
         }
     }, [productByCategory]);
-useEffect(() => {
+    useEffect(() => {
         if (cartItems?.length === 0) {
             setCartItemsList([]);
         } else {
             setCartItemsList(cartItems);
         }
     }, [cartItems]);
-    const updateCartItemsList = (cartItemList: any[], data: any, index:number) => {
+    const updateCartItemsList = (cartItemList: any[], data: any, index: number) => {
         const cartDetails = cartItemList.find((item: any) => item.id === data.id);
         if (cartDetails) {
             return cartItemList.map((item: any) =>
-                item.id === data.id ? { ...item, quantity: quantityList[index]  } : item
+                item.id === data.id ? { ...item, quantity: quantityList[index] } : item
             );
         } else {
             return [...cartItemList, { ...data, quantity: quantityList[index] }];
         }
     };
-    
+
     const mergeCartItems = (cartItems: any[], updatedCartItems: any[]) => {
         const finalCartItems = cartItems ? [...cartItems] : [];
         updatedCartItems.forEach((item: any) => {
@@ -74,43 +71,31 @@ useEffect(() => {
         });
         return finalCartItems;
     };
-    
-    const onClick = (data: any, index:number) => {
+
+    const onClick = (data: any, index: number) => {
         const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, data, index) : [{ ...data, quantity: quantityList[index] }];
         setCartItemsList(updatedCartItems);
-    
+
         const finalCartItems = mergeCartItems(cartItems, updatedCartItems);
         console.log("updatedCartItems", finalCartItems);
         dispatch(setCartItems(finalCartItems));
     };
-    // const backToCart = () => {
-    //     navigate("/");
-    //     dispatch(getSearchResults(null))
-    //     dispatch(getProductsByCategory(null));
-
-    //     let updatedCartItems = cartItems ? [...cartItems, ...cartItemList] : cartItemList;
-
-    //     console.log("updatedCartItems", updatedCartItems);
-    //     dispatch(setCartItems(updatedCartItems));
-    //     setCartItemsList([])
-    // }
-
     const filterClick = (e: any, data: any) => {
         let filterData: any = [];
         if (searchResult?.products?.length > 0) {
-            if(data === "Remove"){
+            if (data === "Remove") {
                 filterData = searchResult.products;
             } else {
-            filterData = searchResult.products.filter((item: any) => item.availabilityStatus === data);
+                filterData = searchResult.products.filter((item: any) => item.availabilityStatus === data);
             }
         } else if (productByCategory?.products?.length > 0) {
-            if(data === "Remove"){
+            if (data === "Remove") {
                 filterData = productByCategory.products;
             } else {
-            filterData = productByCategory.products.filter((item: any) => item.availabilityStatus === data);
+                filterData = productByCategory.products.filter((item: any) => item.availabilityStatus === data);
             }
         }
-        let filterList =  { products: filterData };
+        let filterList = { products: filterData };
         data === "Remove" ? setSelectedFilter("") : setSelectedFilter(data);
         console.log("filterList", filterList);
         setItemListData(filterList);
@@ -134,31 +119,31 @@ useEffect(() => {
         navigate("/");
     }
     return (<div className='cart-item-container'>
-        
-            <div className="cart-pills">
-                <Pill
-                    label="In Stock"
-                    size="small"
-                    onClick={(e) => filterClick(e, "In Stock")}
-                />
-                <Pill
-                    label="Low Stock"
-                    size="small"
-                    onClick={(e) => filterClick(e, "Low Stock")}
-                />
-                <Pill
-                    label="Remove Filter"
-                    size="small"
-                    onClick={(e) => filterClick(e, "Remove")}
-          />
 
-            </div>
-            <hr />
-            <Text tagName="h3">
-                Selected Filter: {selectedFilter}
-            </Text>
-            <div className="example-filter-results" />
-        
+        <div className="cart-pills">
+            <Pill
+                label="In Stock"
+                size="small"
+                onClick={(e) => filterClick(e, "In Stock")}
+            />
+            <Pill
+                label="Low Stock"
+                size="small"
+                onClick={(e) => filterClick(e, "Low Stock")}
+            />
+            <Pill
+                label="Remove Filter"
+                size="small"
+                onClick={(e) => filterClick(e, "Remove")}
+            />
+
+        </div>
+        <hr />
+        <Text tagName="h3">
+            Selected Filter: {selectedFilter}
+        </Text>
+        <div className="filters" />
+
         <div style={{ marginTop: "20px" }}>
 
             <Table
@@ -209,23 +194,23 @@ useEffect(() => {
                             </td>
                             <td>
                                 <div className='cart-wrapper'>
-                                <input type='number' min={0} max={product.stock } 
-                                    value={quantityList[index]}
-                                    name={`quantity${index}`} onChange={(e) => {
-                                        let quantity: number | string = parseInt(e.target.value);
-                                        if (isNaN(quantity)) {
-                                            quantity = "";
-                                        }
-                                        quantityList[index] = quantity;
-                                        setQuantityList([...quantityList]);
-                                    }}
-                                />
-                                <Button onClick={() => onClick(product,index)}
-                                    size='small'
-                                    ssrIcon={shoppingBagAdd}
-                                    type="emphasised"
-                                >
-                                </Button>
+                                    <input type='number' min={0} max={product.stock}
+                                        value={quantityList[index]}
+                                        name={`quantity${index}`} onChange={(e) => {
+                                            let quantity: number | string = parseInt(e.target.value);
+                                            if (isNaN(quantity)) {
+                                                quantity = "";
+                                            }
+                                            quantityList[index] = quantity;
+                                            setQuantityList([...quantityList]);
+                                        }}
+                                    />
+                                    <Button onClick={() => onClick(product, index)}
+                                        size='small'
+                                        ssrIcon={shoppingBagAdd}
+                                        type="emphasised"
+                                    >
+                                    </Button>
                                 </div>
                             </td>
 

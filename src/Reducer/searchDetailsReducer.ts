@@ -1,4 +1,4 @@
-import { GET_SEARCH_RESULTS, GET_SUGGESTION_LIST } from "../Actions/type";
+import { CLEAR_SEARCH_RESULTS, GET_SEARCH_RESULTS, GET_SUGGESTION_LIST } from "../Actions/type";
 
 const initialState = {
     searchResult: null,
@@ -20,6 +20,11 @@ export default (state: any, action: any) => {
                 suggestionList: action.payload,
             };
         };
+        case CLEAR_SEARCH_RESULTS:
+            return {
+                ...state,
+                searchResult: null,
+            };
 
         default:
             return state;

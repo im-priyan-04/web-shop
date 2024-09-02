@@ -6,7 +6,10 @@ import {
   GET_ALL_PRODUCTS,
   GET_PRODUCT_DETAILS,
   GET_PRODUCT_BY_CATEGORY,
-  SET_CART_ITEMS
+  SET_CART_ITEMS,
+  ORDER_CREATED,
+  CLEAR_PRODUCTS_BY_CATEGORY,
+  CLEAR_SEARCH_RESULTS
 } from "./type";
 
 export const getSearchResults = (value: string | null) => async (dispatch: any) => {
@@ -67,4 +70,29 @@ export const setCartItems = (cartItems: any) => async (dispatch: any) => {
       type: SET_CART_ITEMS,
       payload: cartItems
     });
+  }
+
+  export const orderCreatedDetails = (orderDetails: any) => async (dispatch: any) => {
+    return dispatch({
+      type: ORDER_CREATED,
+      payload: orderDetails
+    });
+  }
+
+  export const resetSearchResults = () => async (dispatch: any) => {
+    return dispatch({
+      type: CLEAR_SEARCH_RESULTS,
+    });
+  }
+  
+  export const resetProductsByCategory = () => async (dispatch: any) => {
+   return dispatch({
+      type: CLEAR_PRODUCTS_BY_CATEGORY,
+    });
+  }
+
+  export const resetCart = () => async (dispatch: any) => {
+    dispatch(resetProductsByCategory());
+    dispatch(resetSearchResults());
+    dispatch(setCartItems(null));
   }

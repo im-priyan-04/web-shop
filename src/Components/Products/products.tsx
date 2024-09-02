@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
 import { useSelector } from "react-redux";
-import { getAllProducts, getProductDetails } from "../../Actions/searchAction";
+import { getAllProducts, getProductDetails, searchSuggetion } from "../../Actions/searchAction";
 import Card from "@ingka/card";
 import "./products.scss";
 import { useNavigate } from "react-router-dom";
@@ -21,8 +21,8 @@ const Products = () => {
     }
 
     return (
-        <div className="demo-card-container">
-            <div className="demo-card-flex" >
+        <div className="card-container">
+            <div className="card-flex" >
                 {allProductDetails && allProductDetails?.products?.map((product: any) => (
                     <Card
                         compact
