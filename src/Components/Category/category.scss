@@ -1,0 +1,23 @@
+.category-list {
+    list-style: none;
+    padding: 0 1rem;
+
+    li {
+        font-size: 1rem;
+        color: #111111;
+        font-weight: bold;
+        padding: 1rem;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 4px;
+
+        &:hover {
+            background-color: #f5f5f5;
+            ;
+        }
+
+        &.autocomplete-suggestions.selected-item {
+            border: 2px solid #111111;
+        }
+    }
+}
