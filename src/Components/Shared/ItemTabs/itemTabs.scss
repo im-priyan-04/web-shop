@@ -1,0 +1,12 @@
+.tabs__panel {
+    outline: none;
+    padding: 2.5rem 1rem;
+    position: relative;
+}
+@media screen and  (min-width: 768px ) and (max-width: 1024px) {
+    .tabs__panel {
+        padding: 2.5rem 0.5rem;
+    }
+
+    
+}

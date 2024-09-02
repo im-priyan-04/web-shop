@@ -2,18 +2,24 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
 import { useSelector } from "react-redux";
-import { getAllProducts } from "../../Actions/searchAction";
+import { getAllProducts, getProductDetails } from "../../Actions/searchAction";
 import Card from "@ingka/card";
 import "./products.scss";
+import { useNavigate } from "react-router-dom";
 const Products = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { allProductDetails } = useSelector((state: RootState) => state.productDetailsList);
+    const navigate = useNavigate();
+    
     useEffect(() => {
-        dispatch(getAllProducts())
-    }, [])
+        dispatch(getAllProducts());
+    }, []);
+
     const onSelectProduct = (product: any) => {
-        console.log("product", product);
+        navigate("/productdetails/" + product.id);
+        dispatch(getProductDetails(product.id));
     }
+
     return (
         <div className="demo-card-container">
             <div className="demo-card-flex" >

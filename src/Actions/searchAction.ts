@@ -3,7 +3,8 @@ import {
   GET_CATEGORY,
   GET_SEARCH_RESULTS, 
   GET_SUGGESTION_LIST,
-  GET_ALL_PRODUCTS
+  GET_ALL_PRODUCTS,
+  GET_PRODUCT_DETAILS
 } from "./type";
 
 export const getSearchResults = (value: string | null) => async (dispatch: any) => {
@@ -37,6 +38,15 @@ export const getCategory = () => async (dispatch: any) => {
     const data = await callApi(url, 'GET');
     dispatch({
       type: GET_ALL_PRODUCTS,
+      payload: data
+    });
+  }
+
+  export const getProductDetails = (id: string | null) => async (dispatch: any) => {
+    let url = `https://dummyjson.com/products/${id}`;
+    const data = await callApi(url, 'GET');
+    dispatch({
+      type: GET_PRODUCT_DETAILS,
       payload: data
     });
   }

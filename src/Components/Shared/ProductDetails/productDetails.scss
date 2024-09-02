@@ -1,0 +1,39 @@
+.product-details {
+    .teaser__content {
+        display: flex;
+        flex-direction: column;
+padding-bottom: 1rem;
+align-items: center;
+
+        button.btn {
+            order: 2;
+            width: 200px;
+        }
+    }
+
+    padding: 1rem;
+
+    .aspect-ratio-box {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        padding-bottom: 0;
+        .image {    color: rgba(0, 0, 0, 0);
+            height: 100%;
+            left: auto;
+            object-fit: cover;
+            padding: 0;
+            width: auto;
+            position: relative;
+            top: auto;
+        }
+    }
+
+    .product-details__price {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 10px;
+        gap: 1rem;
+        justify-content: space-between;
+    }
+}
