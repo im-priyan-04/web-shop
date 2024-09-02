@@ -1,0 +1,28 @@
+.search-suggestions-list {
+    list-style: none;
+    padding: 0 1rem;
+    position: absolute;
+    background: #ffffff;
+    z-index: 101;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+  
+      li {
+        font-size: 1rem;
+        color: #111111;
+        font-weight: bold;
+        padding: 1rem 0;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        text-align: left;
+        &:hover {
+          background-color: #f5f5f5;;
+        }
+        &.autocomplete-suggestions.selected-item {
+          border: 2px solid #111111;
+        }
+      }
+    }
