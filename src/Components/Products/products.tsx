@@ -14,16 +14,23 @@ const Products = () => {
     const navigate = useNavigate();
     const [limit, setLimit] = useState(10);  
     const [skip, setSkip] = useState(0);
+    const [showMoreBtn, setShowMoreBtn] = useState(false);
     useEffect(() => {
         dispatch(getAllProducts(limit,skip));
     }, []);
 
     useEffect(() => {
-        setProductList([...productList, ...(allProductDetails?.products || [])]);
+        if(showMoreBtn){
+            setProductList([...productList, ...(allProductDetails?.products || [])]);
+            setShowMoreBtn(false);
+        }else{
+        setProductList([ ...(allProductDetails?.products || [])]);
+    }
     }, [allProductDetails]);
 
     const showMore = () => {
-        setSkip(allProductDetails.products.length);
+        setShowMoreBtn(true);
+        setSkip(productList.length);
         dispatch(getAllProducts(limit,(skip+allProductDetails.products.length)));
     }
 
@@ -35,8 +42,9 @@ const Products = () => {
        <div>
         <div className="card-container">
             <div className="card-flex" >
-                {productList && productList?.map((product: any) => (
+                {productList && productList?.map((product: any, key:any) => (
                     <Card
+                        key={key}
                         compact
                         title={product.title}
                         label={product.brand}

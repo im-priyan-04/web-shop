@@ -116,7 +116,6 @@ const ItemList = () => {
 
         const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, selectedData, index) : [{ ...selectedData, quantity: quantityList[index] }];
         setCartItemsList(updatedCartItems);
-        console.log(updatedCartItems);
         const finalCartItems = mergeCartItems(cartItems, updatedCartItems);
         dispatch(setCartItems(finalCartItems));
 
@@ -166,9 +165,9 @@ const ItemList = () => {
         setLoadMoreClick(true);
         setSortClick(false);
         if (searchResult?.products?.length > 0) {
-            dispatch(getSearchResults(searchInputValue, limit, (skip + searchResult.products.length), selectedSortValue, orderBy));
+            dispatch(getSearchResults(searchInputValue, limit, (skip + itemListData.length), selectedSortValue, orderBy));
         } else if (productByCategory?.products?.length > 0) {
-            dispatch(getProductsByCategory(productByCategory.products[0].category, null, null, limit, (skip + productByCategory.products.length)));
+            dispatch(getProductsByCategory(productByCategory.products[0].category, null, null, limit, (skip + itemListData.length)));
         }
     }
 
