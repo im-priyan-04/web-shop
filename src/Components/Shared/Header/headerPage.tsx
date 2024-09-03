@@ -22,11 +22,16 @@ const HeaderPage = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [toastVisible, setToastVisible] = useState<boolean>(false);
     const searchParms = useSearchParams()
-    console.log("searchParms", searchParms);
     useEffect(() => {
+        let searchDebounce: any;
         if (inputValue) {
-            dispatch(searchSuggetion(inputValue));
-        }
+            searchDebounce = setTimeout(() => {
+                dispatch(searchSuggetion(inputValue));
+            }, 300);
+        } 
+        return () => {
+            clearTimeout(searchDebounce);
+        };
     }, [inputValue]);
     const onSearch = () => {
         if (window.location.pathname !== "/itemList") {
