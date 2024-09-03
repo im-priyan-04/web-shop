@@ -18,7 +18,6 @@ import Button from "@ingka/button";
 const ProductDetails = () => {
     const { productDetails } = useSelector((state: RootState) => state.productDetailsList);
     const onClick = (product: any) => {
-        console.log("product", product);
     }
     return (
         <div className="product-details">

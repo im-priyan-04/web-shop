@@ -47,7 +47,6 @@ const HeaderPage = () => {
         setInputValue(data.value);
     };
     const onCartResultClick = () => {
-        console.log("cart clicked");
         setModalOpen(true);
     };
     return (

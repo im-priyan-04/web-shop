@@ -38,8 +38,8 @@ export const getCategory = () => async (dispatch: any) => {
     });
   }
 
-  export const getAllProducts = () => async (dispatch: any) => {
-    let url = `https://dummyjson.com/products`;
+  export const getAllProducts = (limt:number,skip:number) => async (dispatch: any) => {
+    let url = `https://dummyjson.com/products/?limit=${limt}&skip=${skip}`;
     const data = await callApi(url, 'GET');
     dispatch({
       type: GET_ALL_PRODUCTS,

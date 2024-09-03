@@ -11,14 +11,12 @@ import { orderCreatedDetails } from "../../Actions/searchAction";
 const SearchPage = () => {
     const { cartItems } = useSelector((state: RootState) => state.cartItemsList);
     const {orderDetails} = useSelector((state: RootState) => state.orderDetailsList);
-    console.log("orderDetails", orderDetails);
     const [toastVisible, setToastVisible] = useState<boolean>(false);
     const navigate = useNavigate();
 const dispatch = useDispatch<AppDispatch>();
     const onclose = () => {
         dispatch(orderCreatedDetails(null));
     }
-    console.log("cartItems", cartItems);
   
     return (
         <div>

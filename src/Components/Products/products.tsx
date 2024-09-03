@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
 import { useSelector } from "react-redux";
@@ -6,24 +6,36 @@ import { getAllProducts, getProductDetails, searchSuggetion } from "../../Action
 import Card from "@ingka/card";
 import "./products.scss";
 import { useNavigate } from "react-router-dom";
+import Button from "@ingka/button";
 const Products = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { allProductDetails } = useSelector((state: RootState) => state.productDetailsList);
+    const [productList, setProductList] = useState<any>([]);
     const navigate = useNavigate();
-    
+    const [limit, setLimit] = useState(10);  
+    const [skip, setSkip] = useState(0);
     useEffect(() => {
-        dispatch(getAllProducts());
+        dispatch(getAllProducts(limit,skip));
     }, []);
+
+    useEffect(() => {
+        setProductList([...productList, ...(allProductDetails?.products || [])]);
+    }, [allProductDetails]);
+
+    const showMore = () => {
+        setSkip(allProductDetails.products.length);
+        dispatch(getAllProducts(limit,(skip+allProductDetails.products.length)));
+    }
 
     const onSelectProduct = (product: any) => {
         navigate("/productdetails/" + product.id);
         dispatch(getProductDetails(product.id));
     }
-
     return (
+       <div>
         <div className="card-container">
             <div className="card-flex" >
-                {allProductDetails && allProductDetails?.products?.map((product: any) => (
+                {productList && productList?.map((product: any) => (
                     <Card
                         compact
                         title={product.title}
@@ -35,6 +47,10 @@ const Products = () => {
                 }
             </div>
         </div>
+       <div>
+       <Button type="emphasised" size="small" text="Show More" onClick={showMore} />
+      </div> 
+       </div>
     );
 }
 

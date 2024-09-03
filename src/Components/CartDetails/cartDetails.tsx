@@ -35,7 +35,6 @@ const CartDetails = (props: any) => {
             "toastMessage":"Order is created",
             "toastVisible":true
         }
-        console.log("createOrder");
         navigate("/");
         setToastVisible(true);
         dispatch(orderCreatedDetails(data));
@@ -44,7 +43,6 @@ const CartDetails = (props: any) => {
         dispatch(resetCart());
     };
     const toCart = () => {
-        console.log("toCart");
         setModalOpen(false);
         navigate("/");
     };
