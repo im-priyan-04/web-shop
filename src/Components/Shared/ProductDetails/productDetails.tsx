@@ -2,7 +2,6 @@ import React from "react";
 import Accordion, { AccordionItem } from '@ingka/accordion';
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Store/store";
-import { useDispatch } from "react-redux";
 import Teaser from '@ingka/teaser';
 import AspectRatioBox from '@ingka/aspect-ratio-box';
 import Image from '@ingka/image';
@@ -43,7 +42,7 @@ const ProductDetails = () => {
             <div className="product-details__price">
                 <Badge
                     colour="blue"
-                    label={productDetails?.price + " " + "kr"}
+                    label={`${productDetails?.price}kr`}
                     size="medium"
                     ssrIcon={moneyBills}
                 />

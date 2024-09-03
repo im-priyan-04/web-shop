@@ -7,8 +7,8 @@ import { AppDispatch, RootState } from "../../../Store/store";
 import "./headerPage.scss";
 import shoppingBagAdd from "@ingka/ssr-icon/paths/shopping-bag-add";
 import SearchResults from "../../SearchResults/searchResults";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { getProductsByCategory, getSearchResults, resetProductsByCategory, searchSuggetion, setSearchInputValue } from "../../../Actions/searchAction";
+import { useNavigate } from "react-router-dom";
+import { getSearchResults, resetProductsByCategory, searchSuggetion, setSearchInputValue } from "../../../Actions/searchAction";
 import { useDispatch } from "react-redux";
 
 import home from "@ingka/ssr-icon/paths/home";
@@ -21,11 +21,9 @@ const HeaderPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [toastVisible, setToastVisible] = useState<boolean>(false);
-    const searchParms = useSearchParams();
-
     useEffect(() => {
         dispatch(resetProductsByCategory());
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         let searchDebounce: any;

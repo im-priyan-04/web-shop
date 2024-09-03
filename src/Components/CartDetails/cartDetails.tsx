@@ -16,9 +16,6 @@ const CartDetails = (props: any) => {
     const [promptModalOpen, setPromptModalOpen] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const oncancel = () => {
-        setModalOpen(false);
-    };
     const onClosePopUp = () => {
         setModalOpen(false);
     };

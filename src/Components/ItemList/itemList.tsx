@@ -6,19 +6,15 @@ import { AppDispatch, RootState } from '../../Store/store';
 import Table, { TableBody, TableHeader } from '@ingka/table';
 import Image from '@ingka/image';
 import Button from "@ingka/button";
-import Badge from '@ingka/badge';
 import shoppingBagAdd from "@ingka/ssr-icon/paths/shopping-bag-add";
 import { useNavigate } from 'react-router-dom';
-import { getProductDetails, getProductsByCategory, getSearchResults, setCartItems, setSearchInputValue } from '../../Actions/searchAction';
+import { getProductDetails, getProductsByCategory, getSearchResults, setCartItems } from '../../Actions/searchAction';
 import Pill from '@ingka/pill';
 import Text from '@ingka/text';
 import ListBox, {
-    ListBoxGroup,
-    ListBoxFooter,
     MenuItem,
 } from '@ingka/list-box';
 import chevronDown from "@ingka/ssr-icon/paths/chevron-down";
-import { get } from 'http';
 import { getQuantityList } from '../../Utils/utils';
 const ItemList = () => {
     const dispatch = useDispatch<AppDispatch>();
