@@ -18,6 +18,8 @@ import ListBox, {
     MenuItem,
 } from '@ingka/list-box';
 import chevronDown from "@ingka/ssr-icon/paths/chevron-down";
+import { get } from 'http';
+import { getQuantityList } from '../../Utils/utils';
 const ItemList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { productByCategory } = useSelector((state: RootState) => state.categoryDetailsList);
@@ -46,12 +48,12 @@ const ItemList = () => {
             } else {
                 setItemListData(searchResult?.products || []);
             }
-            setTotal(searchResult.total);
-            const quantity = new Array(searchResult.products.length).fill(0);
+
+            let quantity = getQuantityList(cartItems, searchResult.products) || [];
             setQuantityList(quantity);
 
         }
-    }, [searchResult]);
+    }, [searchResult, cartItems]);
 
     useEffect(() => {
         if (productByCategory?.products?.length > 0) {
@@ -63,10 +65,11 @@ const ItemList = () => {
                 setItemListData(productByCategory?.products || []);
             }
             setTotal(productByCategory.total);
-            const quantity = new Array(productByCategory.products.length).fill(0);
+            let quantity = getQuantityList(cartItems, productByCategory.products) || [];
             setQuantityList(quantity);
         }
     }, [productByCategory]);
+
     useEffect(() => {
         if (cartItems?.length === 0) {
             setCartItemsList([]);
@@ -75,41 +78,48 @@ const ItemList = () => {
         }
     }, [cartItems]);
 
-    const updateCartItemsList = (cartItemList: any[], data: any, index: number) => {
-        const cartDetails = cartItemList.find((item: any) => item.id === data.id);
+    const updateCartItemsList = (cartItemList: any[], selectedData: any, index: number) => {
+        const cartDetails = cartItemList.find((item: any) => item.id === selectedData.id);
         if (cartDetails) {
             return cartItemList.map((item: any) =>
-                item.id === data.id ? { ...item, quantity: quantityList[index] } : item
+                item.id === selectedData.id ? { ...item, quantity: quantityList[index] } : item
             );
         } else {
-            return [...cartItemList, { ...data, quantity: quantityList[index] }];
+            return [...cartItemList, { ...selectedData, quantity: quantityList[index] }];
         }
     };
 
     const mergeCartItems = (cartItems: any[], updatedCartItems: any[]) => {
         const finalCartItems = cartItems ? [...cartItems] : [];
-        updatedCartItems.forEach((item: any) => {
-            const existingItemIndex = finalCartItems.findIndex((cartItem: any) => cartItem.id === item.id);
+
+        updatedCartItems.forEach((item) => {
+            const existingItemIndex = finalCartItems.findIndex((cartItem) => cartItem.id === item.id);
+
             if (existingItemIndex !== -1) {
-                finalCartItems[existingItemIndex] = {
-                    ...finalCartItems[existingItemIndex],
-                    quantity: item.quantity,
-                };
-            } else {
+                if (item.quantity === 0) {
+                    finalCartItems.splice(existingItemIndex, 1);
+                } else {
+                    finalCartItems[existingItemIndex] = {
+                        ...finalCartItems[existingItemIndex],
+                        quantity: item.quantity,
+                    };
+                }
+            } else if (item.quantity !== 0) {
                 finalCartItems.push(item);
             }
         });
+
         return finalCartItems;
     };
 
-    const onClick = (data: any, index: number) => {
-        if(quantityList[index]){
-        const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, data, index) : [{ ...data, quantity: quantityList[index] }];
-        setCartItemsList(updatedCartItems);
+    const onClick = (selectedData: any, index: number) => {
 
+        const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, selectedData, index) : [{ ...selectedData, quantity: quantityList[index] }];
+        setCartItemsList(updatedCartItems);
+        console.log(updatedCartItems);
         const finalCartItems = mergeCartItems(cartItems, updatedCartItems);
         dispatch(setCartItems(finalCartItems));
-        }
+
     };
     const filterClick = (e: any, data: any) => {
         let filterData: any = [];
@@ -126,7 +136,7 @@ const ItemList = () => {
                 filterData = productByCategory.products.filter((item: any) => item.availabilityStatus === data);
             }
         }
-       
+
         data === "Remove" ? setSelectedFilter("") : setSelectedFilter(data);
         setItemListData(filterData);
     }
