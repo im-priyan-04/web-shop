@@ -1,4 +1,4 @@
-import { CLEAR_SEARCH_RESULTS, GET_SEARCH_RESULTS, GET_SUGGESTION_LIST } from "../Actions/type";
+import { CLEAR_SEARCH_RESULTS, GET_SEARCH_RESULTS, GET_SUGGESTION_LIST, SET_SEARCH_INPUT_VALUE } from "../Actions/type";
 
 const initialState = {
     searchResult: null,
@@ -18,6 +18,12 @@ export default (state: any, action: any) => {
             return {
                 ...state,
                 suggestionList: action.payload,
+            };
+        };
+        case SET_SEARCH_INPUT_VALUE: {
+            return {
+                ...state,
+                searchInputValue: action.payload,
             };
         };
         case CLEAR_SEARCH_RESULTS:

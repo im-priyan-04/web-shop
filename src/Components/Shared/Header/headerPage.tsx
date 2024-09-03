@@ -8,7 +8,7 @@ import "./headerPage.scss";
 import shoppingBagAdd from "@ingka/ssr-icon/paths/shopping-bag-add";
 import SearchResults from "../../SearchResults/searchResults";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getSearchResults, searchSuggetion } from "../../../Actions/searchAction";
+import { getProductsByCategory, getSearchResults, resetProductsByCategory, searchSuggetion, setSearchInputValue } from "../../../Actions/searchAction";
 import { useDispatch } from "react-redux";
 
 import home from "@ingka/ssr-icon/paths/home";
@@ -21,7 +21,12 @@ const HeaderPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [toastVisible, setToastVisible] = useState<boolean>(false);
-    const searchParms = useSearchParams()
+    const searchParms = useSearchParams();
+
+    useEffect(() => {
+        dispatch(resetProductsByCategory());
+    }, []);
+
     useEffect(() => {
         let searchDebounce: any;
         if (inputValue) {
@@ -37,7 +42,9 @@ const HeaderPage = () => {
         if (window.location.pathname !== "/itemList") {
             navigate("/itemList");
         }
-        dispatch(getSearchResults(inputValue));
+        dispatch(getSearchResults(inputValue, 5, 0,null,null));
+        dispatch(resetProductsByCategory());
+        dispatch(setSearchInputValue(inputValue));
         setInputValue("");
     };
     const onClickHome = () => {

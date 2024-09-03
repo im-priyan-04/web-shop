@@ -9,11 +9,17 @@ import {
   SET_CART_ITEMS,
   ORDER_CREATED,
   CLEAR_PRODUCTS_BY_CATEGORY,
-  CLEAR_SEARCH_RESULTS
+  CLEAR_SEARCH_RESULTS,
+  SET_SEARCH_INPUT_VALUE
 } from "./type";
 
-export const getSearchResults = (value: string | null) => async (dispatch: any) => {
-  let url = `https://dummyjson.com/products/search?q=${value}`;
+export const getSearchResults = (value: string | null, limit:number | null, skip : number | null, sort:any, orderBy:any) => async (dispatch: any) => {
+  let url='';
+  if (sort) {
+    url = `https://dummyjson.com/products/search?q=${value}&&sortBy=${sort}&&order=${orderBy}`;
+  } else {
+   url = `https://dummyjson.com/products/search?q=${value}&&limit=${limit}&skip=${skip}`;
+  }
   const data = await callApi(url, 'GET');
   dispatch({
     type: GET_SEARCH_RESULTS,
@@ -38,8 +44,8 @@ export const getCategory = () => async (dispatch: any) => {
     });
   }
 
-  export const getAllProducts = (limt:number,skip:number) => async (dispatch: any) => {
-    let url = `https://dummyjson.com/products/?limit=${limt}&skip=${skip}`;
+  export const getAllProducts = (limit:number,skip:number) => async (dispatch: any) => {
+    let url = `https://dummyjson.com/products/?limit=${limit}&skip=${skip}`;
     const data = await callApi(url, 'GET');
     dispatch({
       type: GET_ALL_PRODUCTS,
@@ -56,13 +62,25 @@ export const getCategory = () => async (dispatch: any) => {
     });
   }
 
-  export const getProductsByCategory = (category: string | null) => async (dispatch: any) => {
-    let url = `https://dummyjson.com/products/category/${category}`;
+  export const getProductsByCategory = (category: string | null, sort:any , orderBy:any, limit:any, skip:any) => async (dispatch: any) => {
+    let url = '';
+    if (sort) {
+       url = `https://dummyjson.com/products/category/${category}?sortBy=${sort}&&order=${orderBy}`;
+
+    } else if (limit) {
+      url = `https://dummyjson.com/products/category/${category}?limit=${limit}&&skip=${skip}`;
+    }
+    
+    else {
+
+    url = `https://dummyjson.com/products/category/${category}`;
+    }
     const data = await callApi(url, 'GET');
     dispatch({
       type: GET_PRODUCT_BY_CATEGORY,
       payload: data
     });
+  
 }
 
 export const setCartItems = (cartItems: any) => async (dispatch: any) => {
@@ -95,4 +113,11 @@ export const setCartItems = (cartItems: any) => async (dispatch: any) => {
     dispatch(resetProductsByCategory());
     dispatch(resetSearchResults());
     dispatch(setCartItems(null));
+  }
+
+  export const setSearchInputValue = (value: string) => async (dispatch: any) => {
+    return dispatch({
+      type: SET_SEARCH_INPUT_VALUE,
+      payload: value
+    });
   }

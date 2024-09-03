@@ -14,7 +14,7 @@ const Category = () => {
     }, [])
 
     const onClick = (category: any) => {
-        dispatch(getProductsByCategory(category.slug));
+        dispatch(getProductsByCategory(category.slug,null,null,5,0));
         navigate("/itemList");
     };
 

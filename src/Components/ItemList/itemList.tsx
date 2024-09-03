@@ -9,31 +9,60 @@ import Button from "@ingka/button";
 import Badge from '@ingka/badge';
 import shoppingBagAdd from "@ingka/ssr-icon/paths/shopping-bag-add";
 import { useNavigate } from 'react-router-dom';
-import { getProductDetails, setCartItems } from '../../Actions/searchAction';
+import { getProductDetails, getProductsByCategory, getSearchResults, setCartItems, setSearchInputValue } from '../../Actions/searchAction';
 import Pill from '@ingka/pill';
 import Text from '@ingka/text';
-
+import ListBox, {
+    ListBoxGroup,
+    ListBoxFooter,
+    MenuItem,
+} from '@ingka/list-box';
+import chevronDown from "@ingka/ssr-icon/paths/chevron-down";
 const ItemList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { productByCategory } = useSelector((state: RootState) => state.categoryDetailsList);
-    const { searchResult } = useSelector((state: RootState) => state.searchDetailsList);
+    const { searchResult, searchInputValue } = useSelector((state: RootState) => state.searchDetailsList);
     const { cartItems } = useSelector((state: RootState) => state.cartItemsList);
     const [itemListData, setItemListData] = useState<any>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>();
     const [cartItemList, setCartItemsList] = useState<any>();
     const [quantityList, setQuantityList] = useState<(number | string)[]>([]);
+    const [openSortingList, setOpenSortingList] = useState<boolean>(false);
+    const [selectedSortValue, setSelectedSortValue] = useState<any>();
+    const [orderBy, setOrderBy] = useState<string>("desc");
     const navigate = useNavigate();
+    const [limit, setLimit] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [total, setTotal] = useState(0);
+    const [sortClick, setSortClick] = useState(false);
+    const [loadMoreClick, setLoadMoreClick] = useState(false);
+
     useEffect(() => {
         if (searchResult?.products?.length > 0) {
-            setItemListData(searchResult);
+            if (loadMoreClick && !sortClick) {
+                setItemListData([...itemListData, ...(searchResult?.products || [])]);
+            } else if (sortClick && !loadMoreClick) {
+                setItemListData(searchResult?.products || []);
+            } else {
+                setItemListData(searchResult?.products || []);
+            }
+            setTotal(searchResult.total);
             const quantity = new Array(searchResult.products.length).fill(0);
             setQuantityList(quantity);
+
         }
     }, [searchResult]);
 
     useEffect(() => {
         if (productByCategory?.products?.length > 0) {
-            setItemListData(productByCategory)
+            if (loadMoreClick && !sortClick) {
+                setItemListData([...itemListData, ...(productByCategory?.products || [])])
+            } else if (sortClick && !loadMoreClick) {
+                setItemListData(productByCategory?.products || []);
+            } else {
+                setItemListData(productByCategory?.products || []);
+            }
+            setTotal(productByCategory.total);
             const quantity = new Array(productByCategory.products.length).fill(0);
             setQuantityList(quantity);
         }
@@ -45,6 +74,7 @@ const ItemList = () => {
             setCartItemsList(cartItems);
         }
     }, [cartItems]);
+
     const updateCartItemsList = (cartItemList: any[], data: any, index: number) => {
         const cartDetails = cartItemList.find((item: any) => item.id === data.id);
         if (cartDetails) {
@@ -77,7 +107,6 @@ const ItemList = () => {
         setCartItemsList(updatedCartItems);
 
         const finalCartItems = mergeCartItems(cartItems, updatedCartItems);
-        console.log("updatedCartItems", finalCartItems);
         dispatch(setCartItems(finalCartItems));
     };
     const filterClick = (e: any, data: any) => {
@@ -97,27 +126,45 @@ const ItemList = () => {
         }
         let filterList = { products: filterData };
         data === "Remove" ? setSelectedFilter("") : setSelectedFilter(data);
-        console.log("filterList", filterList);
         setItemListData(filterList);
     }
-    const getByLabelText = (id: any) => {
-        let cartDetails: any = [];
-        if (cartItemList) {
-            cartDetails = cartItemList.find((item: any) => item.id === id);
-            if (cartDetails) {
-                return cartDetails.quantity;
-            }
-        }
-        return 0;
+    const openSorting = () => {
+        setOpenSortingList(!openSortingList);
+
     }
+    const selectedSorting = (e: any, data: any) => {
+        setSortClick(true);
+        setLoadMoreClick(false);
+        setSelectedSortValue(data);
+        if (orderBy === "asc") {
+            setOrderBy("desc")
+        } else {
+            setOrderBy("asc")
+        }
+        if (productByCategory?.products?.length > 0) {
+            dispatch(getProductsByCategory(itemListData?.[0].category, data, orderBy, null, null));
+        }
+        else {
+            dispatch(getSearchResults(searchInputValue, null, null, data, orderBy));
+        }
+
+        setOpenSortingList(!openSortingList);
+    }
+    const showMore = () => {
+        setLoadMoreClick(true);
+        setSortClick(false);
+        if (searchResult?.products?.length > 0) {
+            dispatch(getSearchResults(searchInputValue, limit, (skip + searchResult.products.length), selectedSortValue, orderBy));
+        } else if (productByCategory?.products?.length > 0) {
+            dispatch(getProductsByCategory(productByCategory.products[0].category, null, null, limit, (skip + productByCategory.products.length)));
+        }
+    }
+
     const onSelectProduct = (product: any) => {
         navigate("/productdetails/" + product.id);
         dispatch(getProductDetails(product.id));
-        // dispatch(getProductsByCategory(category.slug));
     }
-    const backToHome = () => {
-        navigate("/");
-    }
+
     return (<div className='cart-item-container'>
 
         <div className="cart-pills">
@@ -136,6 +183,30 @@ const ItemList = () => {
                 size="small"
                 onClick={(e) => filterClick(e, "Remove")}
             />
+            <ListBox
+                multiple
+                position="left"
+                trigger={<Pill iconPosition="trailing" label={<>Sort{' '}</>} ssrIcon={chevronDown} onClick={openSorting} size="small" />}
+                value={[]}
+                open={openSortingList}
+            >
+                <MenuItem
+                    id="option-1"
+                    onClick={(e) => selectedSorting(e, "title")}
+                    title="Item"
+                />
+                <MenuItem
+                    id="option-2"
+                    onClick={(e) => selectedSorting(e, "price")}
+                    title="Price"
+                />
+                <MenuItem
+
+                    id="option-3"
+                    onClick={(e) => selectedSorting(e, "stock")}
+                    title="Stock"
+                />
+            </ListBox>
 
         </div>
         <hr />
@@ -169,7 +240,7 @@ const ItemList = () => {
                     </tr>
                 </TableHeader>
 
-                {itemListData && itemListData.products?.map((product: any, index: any) => (
+                {itemListData && itemListData?.map((product: any, index: any) => (
                     <TableBody striped key={index}>
                         <tr>
                             <td>
@@ -219,6 +290,12 @@ const ItemList = () => {
                 ))}
             </Table>
 
+
+
+        </div>
+        <div className='show-more-btn'>
+            <Button onClick={showMore} type="emphasised" size="small" text="Show More"
+                disabled={itemListData.length === total} />
         </div>
     </div>
     );

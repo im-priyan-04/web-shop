@@ -47,7 +47,7 @@ const Products = () => {
                 }
             </div>
         </div>
-       <div>
+       <div className="card-btn">
        <Button type="emphasised" size="small" text="Show More" onClick={showMore} />
       </div> 
        </div>

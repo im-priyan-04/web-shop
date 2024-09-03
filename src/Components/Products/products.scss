@@ -35,6 +35,13 @@
     }
 }
 
+.card-btn {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
 .card__info {
     .card__cta {
 

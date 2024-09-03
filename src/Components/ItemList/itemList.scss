@@ -1,6 +1,10 @@
 .cart-item-container {
-    .text{
+    .text {
         padding-left: 1.5rem;
+    }
+
+    .list-box {
+        z-index: 200;
     }
 }
 
@@ -36,4 +40,11 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 1rem;
+}
+
+.show-more-btn {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
 }
