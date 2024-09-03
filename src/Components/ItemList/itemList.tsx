@@ -103,11 +103,13 @@ const ItemList = () => {
     };
 
     const onClick = (data: any, index: number) => {
+        if(quantityList[index]){
         const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, data, index) : [{ ...data, quantity: quantityList[index] }];
         setCartItemsList(updatedCartItems);
 
         const finalCartItems = mergeCartItems(cartItems, updatedCartItems);
         dispatch(setCartItems(finalCartItems));
+        }
     };
     const filterClick = (e: any, data: any) => {
         let filterData: any = [];
@@ -124,9 +126,9 @@ const ItemList = () => {
                 filterData = productByCategory.products.filter((item: any) => item.availabilityStatus === data);
             }
         }
-        let filterList = { products: filterData };
+       
         data === "Remove" ? setSelectedFilter("") : setSelectedFilter(data);
-        setItemListData(filterList);
+        setItemListData(filterData);
     }
     const openSorting = () => {
         setOpenSortingList(!openSortingList);

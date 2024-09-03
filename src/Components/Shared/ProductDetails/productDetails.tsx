@@ -32,11 +32,6 @@ const ProductDetails = () => {
                     ssrIcon={shoppingBagAdd}
                     type="emphasised"
                 >
-                    <Badge
-                        colour="blue"
-                        label={"id"}
-                        size="medium"
-                    />
                 </Button>
                 <AspectRatioBox className="aspect-ratio-box">
                     <Image
