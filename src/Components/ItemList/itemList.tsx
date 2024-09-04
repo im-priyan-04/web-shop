@@ -290,17 +290,6 @@ const ItemList = () => {
                             </td>
                             <td>
                                 <div className='cart-wrapper'>
-                                    {/* <input type='number' min={0} max={product.stock}
-                                        value={quantityList[index]}
-                                        name={`quantity${index}`} onChange={(e) => {
-                                            let quantity: number | string = parseInt(e.target.value);
-                                            if (isNaN(quantity)) {
-                                                quantity = "";
-                                            }
-                                            quantityList[index] = quantity;
-                                            setQuantityList([...quantityList]);
-                                        }}
-                                    /> */}
                                     <QuantityStepper
                                         aria-activedescendant=''
                                         ariaDescribedBy=""
@@ -319,12 +308,6 @@ const ItemList = () => {
                                             onCartQuantity(product, index, event, "increase")
                                         }}
                                     />
-                                    {/* <Button onClick={(e:any) => onClick(product, index,e)}
-                                        size='small'
-                                        ssrIcon={shoppingBagAdd}
-                                        type="emphasised"
-                                    >
-                                    </Button> */}
                                 </div>
                             </td>
                             <td>
