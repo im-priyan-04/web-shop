@@ -1,6 +1,16 @@
-export const getQuantityList = (cartItems: any, products: any) => {
-    return products.map((product: any) => {
-        const cartItem = cartItems?.find((item: any) => item.id === product.id);
-        return cartItem ? cartItem.quantity : 0;
-    });
+export const stockAvailability = ( products: any) => {
+    let stockLabel = "";
+        let color = "";
+        if (products.availabilityStatus === "In Stock") {
+            stockLabel = "In Stock";
+            color = "green";
+        } else if (products.availabilityStatus === "Low Stock") {
+            stockLabel = "Low in Stock";
+            color = "orange";
+        } else {
+            stockLabel = "Out of Stock";
+            color = "red";
+        }
+
+        return { stockLabel, color };
 }

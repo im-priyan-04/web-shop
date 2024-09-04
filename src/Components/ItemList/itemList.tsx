@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '../../Store/store';
 import Table, { TableBody, TableHeader } from '@ingka/table';
 import Image from '@ingka/image';
 import Button from "@ingka/button";
-import shoppingBagAdd from "@ingka/ssr-icon/paths/shopping-bag-add";
+import fillBucket from "@ingka/ssr-icon/paths/fill-bucket";
 import { useNavigate } from 'react-router-dom';
 import { getProductDetails, getProductsByCategory, getSearchResults, setCartItems } from '../../Actions/searchAction';
 import Pill from '@ingka/pill';
@@ -15,7 +15,10 @@ import ListBox, {
     MenuItem,
 } from '@ingka/list-box';
 import chevronDown from "@ingka/ssr-icon/paths/chevron-down";
-import { getQuantityList } from '../../Utils/utils';
+import { stockAvailability } from '../../Utils/utils';
+import QuantityStepper from '@ingka/quantity-stepper';
+import Status from '@ingka/status';
+import Badge from '@ingka/badge';
 const ItemList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { productByCategory } = useSelector((state: RootState) => state.categoryDetailsList);
@@ -24,7 +27,6 @@ const ItemList = () => {
     const [itemListData, setItemListData] = useState<any>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>();
     const [cartItemList, setCartItemsList] = useState<any>();
-    const [quantityList, setQuantityList] = useState<(number | string)[]>([]);
     const [openSortingList, setOpenSortingList] = useState<boolean>(false);
     const [selectedSortValue, setSelectedSortValue] = useState<any>();
     const [orderBy, setOrderBy] = useState<string>("desc");
@@ -44,12 +46,8 @@ const ItemList = () => {
             } else {
                 setItemListData(searchResult?.products || []);
             }
-
-            let quantity = getQuantityList(cartItems, searchResult.products) || [];
-            setQuantityList(quantity);
-
         }
-    }, [searchResult, cartItems]);
+    }, [searchResult]);
 
     useEffect(() => {
         if (productByCategory?.products?.length > 0) {
@@ -61,8 +59,6 @@ const ItemList = () => {
                 setItemListData(productByCategory?.products || []);
             }
             setTotal(productByCategory.total);
-            let quantity = getQuantityList(cartItems, productByCategory.products) || [];
-            setQuantityList(quantity);
         }
     }, [productByCategory]);
 
@@ -74,14 +70,20 @@ const ItemList = () => {
         }
     }, [cartItems]);
 
-    const updateCartItemsList = (cartItemList: any[], selectedData: any, index: number) => {
+    const checkQuantity = (cartItem: any, product: any, action: string) => {
+        if (action === "decrease") {
+            return cartItem.id === product.id ? { ...cartItem, quantity: cartItem.quantity - 1 } : cartItem;
+        } else {
+            return cartItem.id === product.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem;
+        }
+    };
+
+    const updateCartItemsList = (cartItemList: any[], selectedData: any, action: string) => {
         const cartDetails = cartItemList.find((item: any) => item.id === selectedData.id);
         if (cartDetails) {
-            return cartItemList.map((item: any) =>
-                item.id === selectedData.id ? { ...item, quantity: quantityList[index] } : item
-            );
+            return cartItemList.map((item: any) => checkQuantity(item, selectedData, action));
         } else {
-            return [...cartItemList, { ...selectedData, quantity: quantityList[index] }];
+            return [...cartItemList, { ...selectedData, quantity: action === "increase" ? 1 : 0 }];
         }
     };
 
@@ -90,7 +92,6 @@ const ItemList = () => {
 
         updatedCartItems.forEach((item) => {
             const existingItemIndex = finalCartItems.findIndex((cartItem) => cartItem.id === item.id);
-
             if (existingItemIndex !== -1) {
                 if (item.quantity === 0) {
                     finalCartItems.splice(existingItemIndex, 1);
@@ -104,18 +105,20 @@ const ItemList = () => {
                 finalCartItems.push(item);
             }
         });
-
         return finalCartItems;
     };
 
-    const onClick = (selectedData: any, index: number) => {
-
-        const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, selectedData, index) : [{ ...selectedData, quantity: quantityList[index] }];
+    const onCartQuantity = (selectedData: any, index: number, e: any, quantity: string) => {
+        const updatedData = { ...selectedData };
+        if (cartItemList === null) {
+            updatedData.quantity = 1;
+        }
+        const updatedCartItems = cartItemList ? updateCartItemsList(cartItemList, updatedData, quantity) : [updatedData];
         setCartItemsList(updatedCartItems);
         const finalCartItems = mergeCartItems(cartItems, updatedCartItems);
         dispatch(setCartItems(finalCartItems));
-
     };
+
     const filterClick = (e: any, data: any) => {
         let filterData: any = [];
         if (searchResult?.products?.length > 0) {
@@ -135,10 +138,11 @@ const ItemList = () => {
         data === "Remove" ? setSelectedFilter("") : setSelectedFilter(data);
         setItemListData(filterData);
     }
+
     const openSorting = () => {
         setOpenSortingList(!openSortingList);
-
     }
+
     const selectedSorting = (e: any, data: any) => {
         setSortClick(true);
         setLoadMoreClick(false);
@@ -157,6 +161,7 @@ const ItemList = () => {
 
         setOpenSortingList(!openSortingList);
     }
+
     const showMore = () => {
         setLoadMoreClick(true);
         setSortClick(false);
@@ -170,6 +175,16 @@ const ItemList = () => {
     const onSelectProduct = (product: any) => {
         navigate("/productdetails/" + product.id);
         dispatch(getProductDetails(product.id));
+    }
+
+    const status = (products: any) => {
+        let stockAvailablity = stockAvailability(products);
+        return <Status
+            label={stockAvailablity.stockLabel}
+            statusColor={(stockAvailablity.color as any)}
+            statusDotPosition="leading"
+            small
+        />
     }
 
     return (<div className='cart-item-container'>
@@ -265,14 +280,17 @@ const ItemList = () => {
                                 {product.price}
                             </td>
                             <td>
-                                {product.availabilityStatus}
+                                {status(product)}
                             </td>
                             <td>
-                                {product.stock}
+                                <Badge
+                                    ssrIcon={fillBucket}
+                                    label={product.stock}
+                                ></Badge>
                             </td>
                             <td>
                                 <div className='cart-wrapper'>
-                                    <input type='number' min={0} max={product.stock}
+                                    {/* <input type='number' min={0} max={product.stock}
                                         value={quantityList[index]}
                                         name={`quantity${index}`} onChange={(e) => {
                                             let quantity: number | string = parseInt(e.target.value);
@@ -282,16 +300,36 @@ const ItemList = () => {
                                             quantityList[index] = quantity;
                                             setQuantityList([...quantityList]);
                                         }}
+                                    /> */}
+                                    <QuantityStepper
+                                        aria-activedescendant=''
+                                        ariaDescribedBy=""
+                                        ariaDescribedById="helper"
+                                        ariaLabelDecrease="Decrease value"
+                                        ariaLabelIncrease="Increase value"
+                                        ariaLabelInput="Enter quantity"
+                                        defaultValue={product.quantity ? product.quantity : 0}
+                                        small={true}
+                                        maxVal={product.stock}
+                                        minVal={0}
+                                        onDecrease={(event) => {
+                                            onCartQuantity(product, index, event, "decrease")
+                                        }}
+                                        onIncrease={(event) => {
+                                            onCartQuantity(product, index, event, "increase")
+                                        }}
                                     />
-                                    <Button onClick={() => onClick(product, index)}
+                                    {/* <Button onClick={(e:any) => onClick(product, index,e)}
                                         size='small'
                                         ssrIcon={shoppingBagAdd}
                                         type="emphasised"
                                     >
-                                    </Button>
+                                    </Button> */}
                                 </div>
                             </td>
+                            <td>
 
+                            </td>
                         </tr>
                     </TableBody>
                 ))}
