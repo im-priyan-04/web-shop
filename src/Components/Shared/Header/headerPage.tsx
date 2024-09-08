@@ -52,7 +52,8 @@ const HeaderPage = () => {
         setInputValue(data.value);
     };
     const onCartResultClick = () => {
-        setModalOpen(true);
+        navigate("/checkout");
+        // setModalOpen(true);
     };
     return (
         <header className="header">
@@ -82,11 +83,12 @@ const HeaderPage = () => {
                     variant="secondary"
                 />
             </div>
-            {modalOpen && <div>
+            {/* commenting this code as implemented new checkout page with cart details */}
+            {/* {modalOpen && <div>
                 <CartDetails setModalOpen={setModalOpen}
                     setToastVisible={setToastVisible}
                 />
-            </div>}
+            </div>} */}
         </header>
     );
 }

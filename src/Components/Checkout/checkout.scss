@@ -1,0 +1,38 @@
+.checkout-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.checkout-list {
+    flex: 1 1 70%; /* 70% of the container's width */
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.checkout-info {
+    flex: 1 1 30%; /* 30% of the container's width */
+    box-sizing: border-box;
+    padding: 10px;
+    margin-top: 20%;
+}
+
+.checkout-list-view {
+    width: 100%; /* Ensure the ListView takes up the full width of its container */
+    
+}
+
+.list-item-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;    
+}
+
+.quantity-stepper {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-stepper button {
+    margin: 0 5px;
+}
