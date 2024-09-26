@@ -76,6 +76,7 @@ const HeaderPage = () => {
                     text={cartItems?.length ? cartItems.length : ""}
                     type="emphasised"
                     onClick={onCartResultClick}
+                    disabled={cartItems?.length === 0 || cartItems === null}
                 />
                 <Avatar screenReaderText="Initials of Tamizh Priyan"
                     size="medium"
